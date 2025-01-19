@@ -4,60 +4,64 @@ import fs from "fs";
 
 const execPromise = util.promisify(exec);
 
-async function extractAudio(videoPath, outputDir) {
-    const audioPath = `${outputDir}/audio.mp3`;
-    const command = `ffmpeg -i ${videoPath} -map a -c:a libmp3lame -b:a 192k ${audioPath}`;
-    await execPromise(command);
-    if (!fs.existsSync(audioPath)) throw new Error("Audio extraction failed");
+export async function extractAudio(videoPath, outputDir) {
+    
+    const copiedVideoPath = `${outputDir}copied_video.mp4`;
+    const audioPath = `${outputDir}audio`;
 
-    return audioPath;
+    
+    const copyVideoCmd = `ffmpeg -i ${videoPath} -c copy ${copiedVideoPath}`;
+  
+    console.log("Running ffmpeg command to copy video:", copyVideoCmd);
+    try {
+      
+      await execPromise(copyVideoCmd);
+      console.log("Video copied successfully:", copiedVideoPath);
+  
+      
+      const extractAudioCmd = `ffmpeg -i ${copiedVideoPath} -map a -c:a libmp3lame -b:a 192k ${audioPath}.mp3`;
+  
+      console.log("Running ffmpeg command to extract audio:", extractAudioCmd);
+      await execPromise(extractAudioCmd);
+  
+      
+      if (!fs.existsSync(`${audioPath}.mp3`)) {
+        throw new Error("Audio extraction failed: File does not exist.");
+      }
+      console.log("Audio extraction complete:", `${audioPath}.mp3`);
+  
+      
+      return `${audioPath}`; 
+    } catch (error) {
+      console.error("Error during video copy or audio extraction:", error);
+      throw error;
+    }
+  }
 
-}
-
-async function segmentVideoBasedOnTimestamps(videoPath, audioPath, topics, outputDir) {
+ export async function segmentVideoBasedOnTimestamps(videoPath, audioPath, topics, outputDir) {
     if (!topics || topics.length === 0) {
       throw new Error("No valid topics found to segment the video.");
     }
-
+  
     const segmentPromises = topics.map(async (item, index) => {
       const startTime = formatTime(item.start);
       const endTime = formatTime(item.end);
       const segmentFilename = `${outputDir}segment_${index + 1}.mp4`;
-
+  
+      
       const segmentCmd = `ffmpeg -i ${videoPath} -i ${audioPath}.mp3 -ss ${startTime} -to ${endTime} -map 0:v:0 -map 1:a:0 -c:v copy -c:a copy -y ${segmentFilename}`;
-
-
+  
+      console.log("Running ffmpeg command to segment video:", segmentCmd);
+  
       try {
         await execPromise(segmentCmd);
+        console.log(`Video segment ${index + 1} created at ${segmentFilename}`);
         return segmentFilename;
       } catch (error) {
+        console.error(`Error creating video segment ${index + 1}:`, error);
         throw error;
       }
     });
-
+  
     return await Promise.all(segmentPromises);
   }
-
-
-app.post("/extract-audio", async (req, res) => {
-    const { videoPath, outputDir } = req.body;
-
-  try {
-    const audioPath = await extractAudio(videoPath, outputDir);
-    res.json({ audioPath });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.post("/segment-video", async (req, res) => {
-    const { videoPath, audioPath, topics, outputDir } = req.body;
-    try {
-      const videoSegments = await segmentVideo(videoPath, audioPath, topics, outputDir);
-      res.json({ videoSegments });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  });
-
-app.listen(PORT, () => console.log(`Video processing server running on port ${PORT}`));
