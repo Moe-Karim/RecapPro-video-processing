@@ -12,5 +12,7 @@ async function extractAudio(videoPath, outputDir) {
     const command = `ffmpeg -i ${videoPath} -map a -c:a libmp3lame -b:a 192k ${audioPath}`;
     await execPromise(command);
     if (!fs.existsSync(audioPath)) throw new Error("Audio extraction failed");
+    
+    return audioPath;
 
 }
