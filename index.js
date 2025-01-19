@@ -26,3 +26,4 @@ app.post("/extract-audio", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+app.listen(PORT, () => console.log(`Video processing server running on port ${PORT}`));
