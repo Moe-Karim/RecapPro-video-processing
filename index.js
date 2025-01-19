@@ -52,4 +52,10 @@ app.post("/extract-audio", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+app.post("/segment-video", async (req, res) => {
+    const { videoPath, audioPath, topics, outputDir } = req.body;
+
+  });
+
 app.listen(PORT, () => console.log(`Video processing server running on port ${PORT}`));
