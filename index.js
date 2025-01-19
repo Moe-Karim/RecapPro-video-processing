@@ -22,6 +22,14 @@ async function segmentVideoBasedOnTimestamps(videoPath, audioPath, topics, outpu
       throw new Error("No valid topics found to segment the video.");
     }
 
+    const segmentPromises = topics.map(async (item, index) => {
+      const startTime = formatTime(item.start);
+      const endTime = formatTime(item.end);
+      const segmentFilename = `${outputDir}segment_${index + 1}.mp4`;
+
+    });
+
+    return await Promise.all(segmentPromises);
   }
 
 
