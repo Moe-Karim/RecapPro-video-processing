@@ -16,6 +16,15 @@ async function extractAudio(videoPath, outputDir) {
     return audioPath;
 
 }
+
+async function segmentVideoBasedOnTimestamps(videoPath, audioPath, topics, outputDir) {
+    if (!topics || topics.length === 0) {
+      throw new Error("No valid topics found to segment the video.");
+    }
+
+  }
+
+
 app.post("/extract-audio", async (req, res) => {
     const { videoPath, outputDir } = req.body;
 
