@@ -55,7 +55,12 @@ app.post("/extract-audio", async (req, res) => {
 
 app.post("/segment-video", async (req, res) => {
     const { videoPath, audioPath, topics, outputDir } = req.body;
-
+    try {
+      const videoSegments = await segmentVideo(videoPath, audioPath, topics, outputDir);
+      res.json({ videoSegments });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
   });
 
 app.listen(PORT, () => console.log(`Video processing server running on port ${PORT}`));
