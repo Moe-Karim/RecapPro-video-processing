@@ -31,7 +31,11 @@ export async function extractAudio(videoPath, outputDir) {
     throw error;
   }
 }
-
+function formatTime(seconds) {
+  const date = new Date(0);
+  date.setSeconds(seconds);
+  return date.toISOString().substr(11, 8);
+}
 export async function segmentVideoBasedOnTimestamps(
   videoPath,
   audioPath,
@@ -62,10 +66,4 @@ export async function segmentVideoBasedOnTimestamps(
   });
 
   return await Promise.all(segmentPromises);
-}
-
-function formatTime(seconds) {
-  const date = new Date(0);
-  date.setSeconds(seconds);
-  return date.toISOString().substr(11, 8);
 }
