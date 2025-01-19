@@ -1,6 +1,7 @@
 {
   "name": "recappro-video-processing",
   "version": "1.0.0",
+  "type": "module",
   "description": "RecapPro Video Processing",
   "main": "index.js",
   "scripts": {
