@@ -27,6 +27,10 @@ async function segmentVideoBasedOnTimestamps(videoPath, audioPath, topics, outpu
       const endTime = formatTime(item.end);
       const segmentFilename = `${outputDir}segment_${index + 1}.mp4`;
 
+      const segmentCmd = `ffmpeg -i ${videoPath} -i ${audioPath}.mp3 -ss ${startTime} -to ${endTime} -map 0:v:0 -map 1:a:0 -c:v copy -c:a copy -y ${segmentFilename}`;
+
+
+
     });
 
     return await Promise.all(segmentPromises);
