@@ -4,3 +4,4 @@ import util from "util";
 import fs from "fs";
 const app = express();
 const PORT = 4000;
+const execPromise = util.promisify(exec);
