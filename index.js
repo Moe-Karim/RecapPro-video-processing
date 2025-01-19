@@ -5,3 +5,7 @@ import fs from "fs";
 const app = express();
 const PORT = 4000;
 const execPromise = util.promisify(exec);
+app.use(express.json());
+
+async function extractAudio(videoPath, outputDir) {
+}
