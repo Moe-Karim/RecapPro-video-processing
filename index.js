@@ -30,7 +30,12 @@ async function segmentVideoBasedOnTimestamps(videoPath, audioPath, topics, outpu
       const segmentCmd = `ffmpeg -i ${videoPath} -i ${audioPath}.mp3 -ss ${startTime} -to ${endTime} -map 0:v:0 -map 1:a:0 -c:v copy -c:a copy -y ${segmentFilename}`;
 
 
-
+      try {
+        await execPromise(segmentCmd);
+        return segmentFilename;
+      } catch (error) {
+        throw error;
+      }
     });
 
     return await Promise.all(segmentPromises);
