@@ -18,4 +18,11 @@ async function extractAudio(videoPath, outputDir) {
 }
 app.post("/extract-audio", async (req, res) => {
     const { videoPath, outputDir } = req.body;
+
+  try {
+    const audioPath = await extractAudio(videoPath, outputDir);
+    res.json({ audioPath });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
