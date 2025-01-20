@@ -45,6 +45,28 @@ export async function detectSilence(audioPath) {
   }
 }
 
+function parseSilenceOutput(stderr) {
+  const silenceTimes = [];
+  const silenceRegex = /silence_start:\s*([\d.]+)|silence_end:\s*([\d.]+)\s*\|\s*silence_duration:\s*([\d.]+)/g;
+
+  let match;
+  let currentStart = null;
+
+  while ((match = silenceRegex.exec(stderr)) !== null) {
+    if (match[1]) {
+
+      currentStart = parseFloat(match[1]);
+    } else if (match[2] && currentStart !== null) {
+      const end = parseFloat(match[2]);
+      const duration = parseFloat(match[3]);
+      silenceTimes.push({ start: currentStart, end, duration });
+      currentStart = null;
+    }
+  }
+  const stderrLines = stderr.trim().split("\n");
+  return silenceTimes;
+}
+
 function formatTime(seconds) {
   const date = new Date(0);
   date.setSeconds(seconds);
