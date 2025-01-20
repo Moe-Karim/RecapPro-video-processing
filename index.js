@@ -107,6 +107,11 @@ export async function segmentVideoBasedOnTimestamps(
 
 export async function burnSubtitles(videoPath, srtPath, audioPath, outputPath) {
   const burnSubtitlesCmd = `ffmpeg -i ${videoPath} -i ${audioPath} -vf "subtitles=${srtPath}" -c:v libx264 -c:a aac -b:a 192k -shortest -y ${outputPath}`;
-
-
+  try {
+    await execPromise(burnSubtitlesCmd);
+    console.log("Subtitles burned successfully:", outputPath);
+  } catch (error) {
+    console.error("Error burning subtitles:", error);
+    throw new Error("Subtitle burning failed");
+  }
 }
