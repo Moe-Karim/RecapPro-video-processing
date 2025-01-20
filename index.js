@@ -31,11 +31,18 @@ export async function extractAudio(videoPath, outputDir) {
     throw error;
   }
 }
+
+export async function detectSilence(audioPath) {
+  const cmd = `ffmpeg -i ${audioPath}.mp3 -af silencedetect=n=-20dB:d=5 -f null -`;
+
+}
+
 function formatTime(seconds) {
   const date = new Date(0);
   date.setSeconds(seconds);
   return date.toISOString().substr(11, 8);
 }
+
 export async function segmentVideoBasedOnTimestamps(
   videoPath,
   audioPath,
