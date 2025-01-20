@@ -7,7 +7,7 @@ const execPromise = util.promisify(exec);
 
 export async function extractAudio(videoPath, outputDir) {
   const copiedVideoPath = `${outputDir}copied_video_${currentDate}_${randomNb}.mp4`;
-  const audioPath = `${outputDir}audio`;
+  const audioPath = `${outputDir}audio_${currentDate}_${randomNb}`;
 
   const copyVideoCmd = `ffmpeg -i ${videoPath} -c copy ${copiedVideoPath}`;
 
