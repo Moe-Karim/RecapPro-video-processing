@@ -1,6 +1,7 @@
 import { exec } from "child_process";
 import util from "util";
 import fs from "fs";
+import {currentDate, randomNb} from "../RecapPro-backend/index.js";
 
 const execPromise = util.promisify(exec);
 
