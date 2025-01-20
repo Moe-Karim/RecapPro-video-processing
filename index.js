@@ -34,7 +34,15 @@ export async function extractAudio(videoPath, outputDir) {
 
 export async function detectSilence(audioPath) {
   const cmd = `ffmpeg -i ${audioPath}.mp3 -af silencedetect=n=-20dB:d=5 -f null -`;
-
+  try {
+    const { stderr } = await execPromise(cmd);
+    return parseSilenceOutput(stderr);
+  } catch (error) {
+    if (error.stderr) {
+      console.error("🛠️ FFmpeg Error Output:\n", error.stderr);
+    }
+    throw error;
+  }
 }
 
 function formatTime(seconds) {
